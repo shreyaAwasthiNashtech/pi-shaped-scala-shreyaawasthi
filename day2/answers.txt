@@ -1,0 +1,14 @@
+Q1: What is the publish-subscribe model in Kafka?
+A: Producers write to a topic; consumers (in a consumer group) subscribe to that topic. Each message is delivered to exactly one member of a given group, but multiple groups can consume the same topic independently. This decouples producers from consumers and allows multiple services to react to the same event stream.
+
+Q2: How does Kafka ensure message durability?
+A: Kafka appends records to disk (commit log) and replicates partitions across brokers. With producer acks=all and broker min.insync.replicas, messages are written to multiple replicas before acknowledgment. Offsets let consumers re-read; retention and compaction policies control storage over time.
+
+Q3: What is the role of a Kafka topic and partition?
+A: A topic is a named stream. It is split into partitions for throughput and parallelism. Ordering is guaranteed within a partition. Keys decide partition placement, helping keep related messages ordered.
+
+Q4: What happens if a consumer fails while processing a message?
+A: If the consumer fails before committing the offset, another consumer in the group will be assigned the partition and will re-process from the last committed offset (at-least-once). Therefore, consumer processing should be idempotent.
+
+Q5: Compare Kafka with RabbitMQ or MQTT.
+A: Kafka is a distributed log for high-throughput streaming and replay at scale. RabbitMQ is a broker with flexible routing (fanout/direct/topic) and per-message ack semantics, great for work queues and RPC-style patterns. MQTT is a lightweight pub-sub protocol for constrained IoT devices with simple QoS levels; it is not a distributed log for analytics. In short: Kafka = streaming + replay; RabbitMQ = flexible messaging/queuing; MQTT = lightweight IoT pub-sub.
